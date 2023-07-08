@@ -32,7 +32,7 @@ export const resolvers = {
   },
   Author: {
     reviews(parent) {
-      return db.reviews.filter((review) => review.author_id === parent.id);
+      return;
     },
   },
   Review: {
@@ -41,6 +41,32 @@ export const resolvers = {
     },
     game(parent) {
       return db.games.find((game) => game.id === parent.game_id);
+    },
+  },
+
+  Mutation: {
+    deleteGame(_, args, context) {
+      db.games = db.games.filter((game) => game.id !== args.id);
+      return db.games;
+    },
+    addGame(_, args, context) {
+      let game = {
+        ...args.game,
+        id: Math.floor(Math.random() * 10000).toString(),
+      };
+      db.games.push(game);
+      return game;
+    },
+    updateGame(_, args, context) {
+      db.games = db.games.map((game) => {
+        if (game.id === args.id) {
+          return {
+            ...args.game,
+            id: args.id,
+          };
+        }
+      });
+      return db.games.find((game) => game.id === args.id);
     },
   },
 };
